@@ -1,8 +1,8 @@
-from tw2.core import Param
-from recaptcha.client.captcha import displayhtml, API_SERVER, API_SSL_SERVER
-from tw2.forms import InputField
+from tw2.core import Param, Variable, js_callback
+from tw2.forms import InputField, Form
+from tw2.jquery.base import jquery_js, jQuery
 
-from tw2.core import templating, widgets
+from recaptcha.client.captcha import API_SERVER, API_SSL_SERVER
 
 class ReCaptchaWidget(InputField):
     template = """<div><script type="text/javascript" src="${w.server}/challenge?k=${w.public_key}${w.error_param}"></script>
@@ -10,7 +10,10 @@ class ReCaptchaWidget(InputField):
   <iframe src="${w.server}/noscript?k=${w.public_key}${w.error_query_string}" height="300" width="500" frameborder="0"></iframe><br />
   <textarea name="recaptcha_challenge_field" rows="3" cols="40"></textarea>
   <input type='hidden' name='recaptcha_response_field' value='manual_challenge' />
-</noscript></div>
+</noscript>
+<input type='hidden' id='${w.compound_id}:recaptcha_challenge_field' name='${w.compound_id}:recaptcha_challenge_field' />
+<input type='hidden' id='${w.compound_id}:recaptcha_response_field' name='${w.compound_id}:recaptcha_response_field' />
+</div>
 """ 
 
     inline_engine_name = 'genshi'
@@ -23,10 +26,22 @@ class ReCaptchaWidget(InputField):
 
     error_query_string = Variable(default="")
 
+    resources = [jquery_js]
+
+    @property
+    def form_widget(self):
+        if not hasattr(self, '_form_widget'):
+            w = self
+            while not isinstance(w, Form):
+                w = w.parent
+                if not w:
+                    raise RuntimeError(
+                            "Couldn't determine form for widget %r" % self)
+            self._form_widget = w
+        return self._form_widget
+
     def prepare(self):
-        """This method is called every time the widget is displayed. It's task
-        is to prepare all variables that are sent to the template. Those
-        variables can accessed as attributes of d."""
+        super(ReCaptchaWidget, self).prepare()
 
         if self.error_param:
             self.safe_modify('error_query_string')
@@ -35,6 +50,13 @@ class ReCaptchaWidget(InputField):
         if self.use_ssl:
             self.server = API_SSL_SERVER
 
-        self.captcha_response = displayhtml(self.public_key)
-        return super(ReCaptchaWidget, self).prepare()
-
+        copy_recaptcha_fields = jQuery(
+                "#" + self.form_widget.compound_id.replace(":", r"\:")).submit(
+                js_callback(r"""function(){{
+$('input#{compound_id}\\:recaptcha_challenge_field').val(
+  $('input#recaptcha_challenge_field').val());
+$('input#{compound_id}\\:recaptcha_response_field').val(
+  $('input#recaptcha_response_field').val());
+return true;}}""".format(
+                compound_id=self.compound_id.replace(":", r"\\:"))))
+        self.add_call(copy_recaptcha_fields)
