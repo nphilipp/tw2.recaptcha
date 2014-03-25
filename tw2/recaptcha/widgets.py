@@ -4,6 +4,8 @@ from tw2.jquery.base import jquery_js, jQuery
 
 from recaptcha.client.captcha import API_SERVER, API_SSL_SERVER
 
+API_NOSCHEME_SERVER = API_SERVER.split(":", 1)[1]
+
 class ReCaptchaWidget(InputField):
     template = """<div><script type="text/javascript" src="${w.server}/challenge?k=${w.public_key}${w.error_param}"></script>
 <noscript>
@@ -22,7 +24,7 @@ class ReCaptchaWidget(InputField):
     public_key = Param(default=None, attribute=True)
     use_ssl = Param(default=False, attribute=True)
     error_param = Param(default=None, attribute=True)
-    server = Param(default=API_SERVER, attribute=True)
+    server = Param(default=API_NOSCHEME_SERVER, attribute=True)
 
     error_query_string = Variable(default="")
 
