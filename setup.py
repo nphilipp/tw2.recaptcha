@@ -66,6 +66,7 @@ setup(
     install_requires=[
         "tw2.core",
         ## Add other requirements here
+        "Genshi",
         "recaptcha-client",
         ],
     packages=find_packages(exclude=['ez_setup', 'tests']),

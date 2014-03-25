@@ -5,8 +5,6 @@ from tw2.forms import InputField
 from tw2.core import templating, widgets
 
 class ReCaptchaWidget(InputField):
-    inline_engine_name = 'mako'
-
     template = """<div><script type="text/javascript" src="${w.server}/challenge?k=${w.public_key}${w.error_param}"></script>
 <noscript>
   <iframe src="${w.server}/noscript?k=${w.public_key}${w.error_param}" height="300" width="500" frameborder="0"></iframe><br />
@@ -14,6 +12,8 @@ class ReCaptchaWidget(InputField):
   <input type='hidden' name='recaptcha_response_field' value='manual_challenge' />
 </noscript></div>
 """ 
+
+    inline_engine_name = 'genshi'
 
     type='text'
     public_key = Param(default=None, attribute=True)
