@@ -2,8 +2,7 @@ from formencode.validators import FancyValidator
 from formencode import Invalid
 import urllib, urllib2
 
-import gettext
-_ = gettext.gettext
+from pylons.i18n import N_
 
 class ReCaptchaValidator(FancyValidator):
     """
@@ -11,8 +10,8 @@ class ReCaptchaValidator(FancyValidator):
     """
 
     messages = {
-        'incorrect': _("Incorrect value."),
-        'missing':  _("Missing value."),
+        'incorrect': N_("Incorrect value."),
+        'missing':  N_("Missing value."),
     }
 
     verify_server           = "api-verify.recaptcha.net"
