@@ -9,7 +9,7 @@ from setuptools import setup, find_packages
 
 
 def find_package_data( package='', where='.', only_in_packages=True):
-    """Finds static resources in package. Adapted from turbogears.finddata."""  
+    """Finds static resources in package. Adapted from turbogears.finddata."""
     out = {}
     exclude = ('*.py', '*.pyc', '*~', '.*', '*.bak', '*.swp*')
     exclude_directories = ('.*', 'CVS', '_darcs', './build',
