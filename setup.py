@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import os
 import sys
 from fnmatch import fnmatchcase
@@ -23,9 +25,9 @@ def find_package_data( package='', where='.', only_in_packages=True):
                     if (fnmatchcase(name, pattern)
                         or fn.lower() == pattern.lower()):
                         bad_name = True
-                        print >> sys.stderr, (
-                            "Directory %s ignored by pattern %s"
-                            % (fn, pattern))
+                        print(
+                            "Directory %s ignored by pattern %s" %
+                            (fn, pattern), file=sys.stderr)
                         break
                 if bad_name:
                     continue
@@ -44,9 +46,9 @@ def find_package_data( package='', where='.', only_in_packages=True):
                     if (fnmatchcase(name, pattern)
                         or fn.lower() == pattern.lower()):
                         bad_name = True
-                        print >> sys.stderr, (
-                            "File %s ignored by pattern %s"
-                            % (fn, pattern))
+                        print(
+                            "File %s ignored by pattern %s" % (fn, pattern),
+                            file=sys.stderr)
                         break
                 if bad_name:
                     continue
