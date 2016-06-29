@@ -14,7 +14,7 @@ class ReCaptchaValidator(FancyValidator):
         'missing':  N_("Missing value."),
     }
 
-    verify_server           = "api-verify.recaptcha.net"
+    verify_server           = "www.google.com"
     __unpackargs__ = ('*', 'field_names')
 
     validate_partial_form   = True
@@ -48,7 +48,7 @@ class ReCaptchaValidator(FancyValidator):
             'response' : response,
             })
         request = urllib2.Request(
-            url = "http://%s/verify" % self.verify_server,
+            url = "https://%s/recaptcha/api/verify" % self.verify_server,
             data = params,
             headers = {"Content-type": "application/x-www-form-urlencoded",
                        "User-agent": "reCAPTCHA Python"
