@@ -55,7 +55,10 @@ def find_package_data( package='', where='.', only_in_packages=True):
                 out.setdefault(package, []).append(prefix+name)
     return out
 
-execfile(os.path.join("tw2", "recaptcha", "release.py"))
+release_file = os.path.join("tw2", "recaptcha", "release.py")
+with open(release_file) as f:
+    code = compile(f.read(), release_file, 'exec')
+    exec(code)
 
 setup(
     name=__PROJECT__,
