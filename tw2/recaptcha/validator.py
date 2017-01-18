@@ -1,6 +1,15 @@
 from formencode.validators import FancyValidator
 from formencode import Invalid
-import urllib, urllib2
+import urllib
+if not hasattr(urllib, 'parse'):
+    import urlparse
+    urllib.parse = urlparse
+    urllib.parse.urlencode = urllib.urlencode
+    del urlparse
+if not hasattr(urllib, 'request'):
+    import urllib2
+    urllib.request = urllib2
+    del urllib2
 
 from pylons.i18n import N_
 
@@ -41,13 +50,13 @@ class ReCaptchaValidator(FancyValidator):
             error = Invalid(self.message('missing', state), field_dict, state)
             error.error_dict = {'recaptcha_response_field':'Missing value'}
             raise error
-        params = urllib.urlencode({
+        params = urllib.parse.urlencode({
             'privatekey': self.private_key,
             'remoteip' : self.remote_ip,
             'challenge': challenge,
             'response' : response,
             })
-        request = urllib2.Request(
+        request = urllib.request.Request(
             url = "https://%s/recaptcha/api/verify" % self.verify_server,
             data = params,
             headers = {"Content-type": "application/x-www-form-urlencoded",
@@ -55,7 +64,7 @@ class ReCaptchaValidator(FancyValidator):
                       }
             )
         
-        httpresp = urllib2.urlopen(request)
+        httpresp = urllib.request.urlopen(request)
         return_values = httpresp.read().splitlines();
         httpresp.close();
         return_code = return_values[0]
