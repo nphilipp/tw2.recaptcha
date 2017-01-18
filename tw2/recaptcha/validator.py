@@ -39,7 +39,7 @@ class ReCaptchaValidator(FancyValidator):
 
     def validate_partial(self, field_dict, state):
         for name in self.field_names:
-            if not field_dict.has_key(name):
+            if name not in field_dict:
                 return
         self.validate_python(field_dict, state)
 
