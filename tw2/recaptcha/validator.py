@@ -36,7 +36,7 @@ class ReCaptchaValidator(FancyValidator):
         self.remote_ip = remote_ip
         self.field_names = ['recaptcha_challenge_field',
                             'recaptcha_response_field']
-    
+
     def validate_partial(self, field_dict, state):
         for name in self.field_names:
             if not field_dict.has_key(name):
@@ -63,7 +63,7 @@ class ReCaptchaValidator(FancyValidator):
                        "User-agent": "reCAPTCHA Python"
                       }
             )
-        
+
         httpresp = urllib.request.urlopen(request)
         return_values = httpresp.read().splitlines();
         httpresp.close();
